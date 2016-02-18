@@ -1,0 +1,7 @@
+Disclaimer
+----
+The kanjis and associated meanings belong to the Electronic Dictionary Research and Development Group[1] and are distributed under Creative Commons Attribution-ShareAlike Licence (V3.0) as specified in the license of its original web page [2].
+All contents are the same as the original unmodified sources from the Electronic Dictionary Research and Development Group webpage.
+
+[1] http://www.csse.monash.edu.au/~jwb/kanjidic2/index.html
+[2] http://www.edrdg.org/edrdg/licence.html
