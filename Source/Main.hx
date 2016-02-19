@@ -33,10 +33,12 @@ class Main {
 
 	static function main () {
 #if js
+		trace("Uncompressing dictionary");
 		var bytes = haxe.Resource.getBytes("serialized_kanji_dict");
 		var uncomp:haxe.io.Bytes = haxe.zip.Uncompress.run(bytes,1024);
 		var unserializer = new Unserializer(uncomp.getString(0,uncomp.length));
 		meanings = unserializer.unserialize();
+		trace("Booting HTML");
 		html = cast hxdom.js.Boot.init();
 		modalGroup = new ModalGroup();
 		html.node.childNodes[1].vnode().append(modalGroup);
@@ -64,6 +66,7 @@ class Main {
 		var body = new EBody();
 		body.append(cont);
 		html.append(body);
+		trace("HTML completed");
 #else
 		var body = new EBody();
 		html = new EHtml();
@@ -75,6 +78,7 @@ class Main {
 		head.append(new EScript().addText("HTMLDetailsElement = HTMLElement;"));
 		head.append(new EScript().setAttr("src", "http://code.jquery.com/jquery-1.12.0.min.js").setAttr("defer", true));
 		head.append(new EScript().setAttr("src", "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js").setAttr("defer", true));
+		head.append(new EScript().setAttr("src", "eventtarget.js").setAttr("defer", true));
 		head.append(new EScript().setAttr("src", "client.js").setAttr("defer", true));
 		html.append(head).append(body);
 		Sys.println(hxdom.HtmlSerializer.run(html));
