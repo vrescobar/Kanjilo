@@ -7,7 +7,7 @@
 #-debug
 #-D source-map-content
 -resource out/kanji_dumped.serialized@serialized_kanji_dict
--resource disclaimer.txt@cc_disclaimer
+-resource Assets/disclaimer.txt@cc_disclaimer
 -dce full
 
 --next

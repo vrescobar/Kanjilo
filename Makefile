@@ -17,7 +17,7 @@ xmldump: ${KANJIDICT}
 	neko ${BUILD}/xml-test.n ${KANJIDICT} ${KANJI_DUMPED}
 
 cmd: ${KANJI_DUMPED}
-	haxe -cp Source/ -main Kanjilo -cpp $(BUILD)/cmd-cpp/ -resource ${KANJI_DUMPED}@serialized_kanji_dict -resource disclaimer.txt@cc_disclaimer -dce full
+	haxe -cp Source/ -main Kanjilo -cpp $(BUILD)/cmd-cpp/ -resource ${KANJI_DUMPED}@serialized_kanji_dict -resource Assets/disclaimer.txt@cc_disclaimer -dce full
 
 clean:
 	rm -rf $(BUILD) && mkdir -p $(BUILD)
