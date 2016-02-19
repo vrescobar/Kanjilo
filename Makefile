@@ -8,10 +8,7 @@ KANJI_DUMPED = ${BUILD}/kanji_dumped.serialized
 all: clean xmldump cmd web
 
 web:
-	mkdir -p $(BUILD)/web/
-	haxe -cp ${SOURCE} -lib hxdom -lib hxdom-bootstrap -js $(BUILD)/web/client.js -main Main -D js-flatten -dce full
-	haxe -cp ${SOURCE} -lib hxdom -lib hxdom-bootstrap -neko $(BUILD)/web_gen.n -main Main
-	neko $(BUILD)/web_gen.n > $(BUILD)/web/index.html
+	haxe build_web.hxml
 serve:
 	cd $(BUILD)/web && python -m SimpleHTTPServer ; cd -
 
