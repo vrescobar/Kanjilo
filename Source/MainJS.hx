@@ -49,26 +49,27 @@ class MainJS {
 		panel.append(populate_table(default_vals));
 
 		var modalBtn = new EButton().button(Primary, Small).addText("Extract");
-
-		cont.append(col1).append(panel);
-		col1.append(modalBtn);
 		modalBtn.addEventListener("click", onClick);
+
+		var disclaimer = new EParagraph().setAttr("style", "color:#D0D0D0").addText(haxe.Resource.getString("cc_disclaimer"));
+
+		cont.append(col1).append(modalBtn).append(panel).append(disclaimer);
+
 
 		var body = new EBody();
 		body.append(cont);
+
 		html.append(body);
 		trace("HTML completed");
 	}
 	@:client
 	static public function onClick (_):Void {
 		var parent = table.parent();
-		try {
-			table.remove();
-		} catch(e:Dynamic) {};
+		table.remove(); // Fix: populate table recreates it again
 		//TODO: Fix this untyped mess
 		var inptxt:Dynamic = js.Browser.document.getElementById("user_input");
 		var input_text:String = inptxt.value;
-		trace("I got that: ", input_text); // //私は学生の日本語です！
+		trace("I got that text: " + input_text); //私は学生の日本語です！
 		parent.append(populate_table(ext.freq_and_meanings(input_text)));
 
 	}
