@@ -6,38 +6,30 @@ import hxdom.bootstrap.Modal;
 import hxdom.bootstrap.Panel;
 import hxdom.bootstrap.Table;
 import hxdom.Elements;
-import haxe.Unserializer;
 
 using hxdom.BSTools;
 using hxdom.DomTools;
 
-
-typedef KanjiFreq = {
-	var freq:Int;
-	var kanji:String;
-	var meaning:String;
-			};
 
 class Main {
 
 	static var html:EHtml;
 	static var modalGroup:ModalGroup;
 	static var table:Table;
-	static var exampleText:String = "エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
-	static var meanings:Map<String,Array<String>>;
-	/*static var vals:Array<KanjiFreq> =
-		[{freq: 100, kanji:"案", meaning:"plan, suggestion, draft, ponder, fear, proposition, idea, expectation, worry, table, bench"},
-		{freq:24, kanji:"言", meaning: "say, word"},
-		{freq:24, kanji:"語", meaning:"word, speech, language"}];*/
+	static var exampleText:String = "私は日本語の学生です";
+		//"エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
+	static var ext:Extractor;
 
-
+	static var default_vals:Array<Extractor.KanjiFreq> = [];
+		/*[{freq: 1, kanji: "本", meaning: "book, present, main, origin, true, real, counter for long cylindrical things"},
+		{freq: 1, kanji: "日", meaning: "day, sun, Japan, counter for days"},
+		{freq: 1, kanji: "私", meaning: "private, I, me"},
+		{freq: 1, kanji: "学", meaning: "study, learning, science"},
+		{freq: 1, kanji: "語", meaning: "word, speech, language"},
+		{freq: 1, kanji: "生", meaning: "life, genuine, birth"}];*/
 	static function main () {
 #if js
-		trace("Uncompressing dictionary");
-		var bytes = haxe.Resource.getBytes("serialized_kanji_dict");
-		var uncomp:haxe.io.Bytes = haxe.zip.Uncompress.run(bytes,1024);
-		var unserializer = new Unserializer(uncomp.getString(0,uncomp.length));
-		meanings = unserializer.unserialize();
+		ext = new Extractor();
 		trace("Booting HTML");
 		html = cast hxdom.js.Boot.init();
 		modalGroup = new ModalGroup();
@@ -55,7 +47,7 @@ class Main {
 
 		var panel = new Panel(Primary);
 		panel.body.append(new EParagraph().addText("List of kanji found, ordered by increasing complexity/frequency in text"));
-		panel.append(populate_table([]));
+		panel.append(populate_table(default_vals));
 
 		var modalBtn = new EButton().button(Primary, Small).addText("Extract");
 
@@ -94,17 +86,12 @@ class Main {
 		//TODO: Fix this untyped mess
 		var inptxt:Dynamic = js.Browser.document.getElementById("user_input");
 		var input_text:String = inptxt.value;
-		trace("I got that: ", input_text);
-		//私は学生の日本語です！
-		var found_freqs:Array<KanjiFreq> = [ for (freq in Extractor.kanji_frequencies(input_text)) {
-													{ freq: freq[1],
-													  kanji: freq[0],
-													  meaning: meanings.get(freq[0]).join(", ") }}];
-		parent.append(populate_table(found_freqs));
+		trace("I got that: ", input_text); // //私は学生の日本語です！
+		parent.append(populate_table(ext.freq_and_meanings(input_text)));
 
 	}
 	@:client
-	static function populate_table(frequencies:Array<KanjiFreq>):Table {
+	static function populate_table(frequencies:Array<Extractor.KanjiFreq>):Table {
 		var rows:Array<Array<Text>> = [[new Text("Freq#"), new Text("Kanji"), new Text("Meaning")]];
 		for (kf in frequencies) rows.push([new Text(Std.string(kf.freq)), new Text(kf.kanji), new Text(kf.meaning)]);
 

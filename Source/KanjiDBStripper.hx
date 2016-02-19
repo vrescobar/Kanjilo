@@ -6,7 +6,7 @@ import haxe.xml.Fast;
 import haxe.Serializer;
 import haxe.io.Bytes;
 
-class KanjiDB {
+class KanjiDBStripper {
     public static function main() {
         if (Sys.args().length < 2 || FileSystem.exists(Sys.args()[1]) || !FileSystem.exists(Sys.args()[0])) {
             Sys.stderr().writeString("Usage error: kanjiDB original.xml output_dumped.kanjis\n");
