@@ -35,13 +35,17 @@ class Extractor {
             }});
 
 
-        return [for (kanji in all_kanji.keys())
+        var arr = [for (kanji in all_kanji.keys())
                                 {
                                     freq:    all_kanji[kanji],
                                     kanji:   utfInt2string(kanji),
                                     meaning: meanings.get(utfInt2string(kanji)).join(", ")
                                 }
                             ];
+        arr.sort( function(old:KanjiFreq, nnew:KanjiFreq):Int {
+                return nnew.freq - old.freq;
+            });
+        return arr;
     }
     static inline function utfInt2string(inp_Int:Int):String {
         var u = new Utf8();
