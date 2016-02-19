@@ -11,13 +11,13 @@ using hxdom.BSTools;
 using hxdom.DomTools;
 
 
-class Main {
+class MainJS {
 
 	static var html:EHtml;
 	static var modalGroup:ModalGroup;
 	static var table:Table;
-	static var exampleText:String = "私は日本語の学生です";
-		//"エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
+	static var exampleText:String = //"私は日本語の学生です";
+		"エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
 	static var ext:Extractor;
 
 	static var default_vals:Array<Extractor.KanjiFreq> = [];
@@ -28,7 +28,6 @@ class Main {
 		{freq: 1, kanji: "語", meaning: "word, speech, language"},
 		{freq: 1, kanji: "生", meaning: "life, genuine, birth"}];*/
 	static function main () {
-#if js
 		ext = new Extractor();
 		trace("Booting HTML");
 		html = cast hxdom.js.Boot.init();
@@ -59,24 +58,7 @@ class Main {
 		body.append(cont);
 		html.append(body);
 		trace("HTML completed");
-#else
-		var body = new EBody();
-		html = new EHtml();
-		html.setAttr("lang", "en");
-		var head = new EHead();
-		head.append(new EMeta().setAttr("charset", "utf-8"));
-		head.append(new ELink().setAttr("rel", "stylesheet").setAttr("href", "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"));
-		head.append(new ELink().setAttr("rel", "stylesheet").setAttr("href", "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"));
-		head.append(new EScript().addText("HTMLDetailsElement = HTMLElement;"));
-		head.append(new EScript().setAttr("src", "http://code.jquery.com/jquery-1.12.0.min.js").setAttr("defer", true));
-		head.append(new EScript().setAttr("src", "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js").setAttr("defer", true));
-		head.append(new EScript().setAttr("src", "eventtarget.js").setAttr("defer", true));
-		head.append(new EScript().setAttr("src", "client.js").setAttr("defer", true));
-		html.append(head).append(body);
-		Sys.println(hxdom.HtmlSerializer.run(html));
-#end
 	}
-#if js
 	@:client
 	static public function onClick (_):Void {
 		var parent = table.parent();
@@ -98,5 +80,4 @@ class Main {
 		table = Table.build(rows, [Hover, Striped]);
 		return table;
 	}
-#end
 }

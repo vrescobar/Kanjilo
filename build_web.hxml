@@ -2,7 +2,7 @@
 -lib hxdom
 -lib hxdom-bootstrap
 -js out/web/client.js
--main Main
+-main MainJS
 -debug
 #--no-traces
 -resource out/kanji_dumped.serialized@serialized_kanji_dict
@@ -14,9 +14,6 @@
 -cp Source
 -lib hxdom
 -lib hxdom-bootstrap
--debug
 -neko out/web_gen.n
-#-D source-map-content
--main Main
-
+-main ServeHTML
 -cmd neko out/web_gen.n > out/web/index.html
