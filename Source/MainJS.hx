@@ -7,77 +7,60 @@ import hxdom.bootstrap.Panel;
 import hxdom.bootstrap.Table;
 import hxdom.Elements;
 
+import hxdom.html.MutationObserver;
+import hxdom.html.MutationRecord;
+
 using hxdom.BSTools;
 using hxdom.DomTools;
 
 
 class MainJS {
 
-	static var html:EHtml;
-	static var modalGroup:ModalGroup;
 	static var table:Table;
-	static var exampleText:String = //"私は日本語の学生です";
-		"エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
+	static var inptxt:ETextArea;
+	static var exampleText:String = "私は日本語の学生です";
+		//"エスペラント とは、ルドヴィコ・ザメンホフが考案した人工言語。母語の異なる人々の間での意思伝達を目的とする、いわゆる国際補助語としては最も世界的に認知され、普及の成果を収めた言語となっている。";
 	static var ext:Extractor;
-
-	static var default_vals:Array<Extractor.KanjiFreq> = [];
-		/*[{freq: 1, kanji: "本", meaning: "book, present, main, origin, true, real, counter for long cylindrical things"},
-		{freq: 1, kanji: "日", meaning: "day, sun, Japan, counter for days"},
-		{freq: 1, kanji: "私", meaning: "private, I, me"},
-		{freq: 1, kanji: "学", meaning: "study, learning, science"},
-		{freq: 1, kanji: "語", meaning: "word, speech, language"},
-		{freq: 1, kanji: "生", meaning: "life, genuine, birth"}];*/
 	static function main () {
 		ext = new Extractor();
 		trace("Booting HTML");
-		html = cast hxdom.js.Boot.init();
-		modalGroup = new ModalGroup();
+		var html:EHtml = cast hxdom.js.Boot.init();
+		var modalGroup:ModalGroup = new ModalGroup();
 		html.node.childNodes[1].vnode().append(modalGroup);
 
 		var cont = new EDiv().container();
-		cont.append(new EUnorderedList().breadcrumbs().append(new EListItem().addText("Kanji Extractor")));
-		var inptxt:ETextArea = new ETextArea().setAttr("id","user_input").setAttr("style", "width:100%").setAttr("class", "form-control").setAttr("rows", "3").addText(exampleText);
+		inptxt = new ETextArea();
+		inptxt.setAttr("id","user_input").setAttr("style", "width:100%").addClass("form-control").setAttr("rows", "3").addText(exampleText);
+		inptxt.addEventListener("input", updateTable);
 
-		var col1 = new EDiv().append(new EHeader1().setText("Find all kanjis"))
-		.append(new EParagraph().textAlign(Right).lead().addText("Learn kanjis lazily: study the meaning of kanji as soon as you find them in a text, but not before."))
-		.append(new EParagraph().addText("Are you a Heisig's RTK fan but cannot stick to it? Be lazy: apply Heisig's method for memorizing by associations as you learn, but do it incrementaly only with the materials which you are about to use."))
-		.append(inptxt);
-
+		var col1 = new EDiv().append(new EHeader1().setText("Find kanji's meanings"))
+		.append(new EParagraph().textAlign(Right).lead().addText("Introduce a text in japanese, this page will prepare you a study table with the kanji meanings."))
+		.append(new EParagraph().addText("I was a fan of Heisig's RTK method but I did not want to learn the whole list of kanji before start with the language. My approach is being lazy: do not learn a kanji until it is necessary. In a normal kanji memorizing session I would focus only on the kanji which will appear in the next study lesson. Feel free to copy the generated table in a spreadsheet and prepare or format it at your will before your actual study."))
+		.append(inptxt).append(new EParagraph());
 
 		var panel = new Panel(Primary);
-		panel.body.append(new EParagraph().addText("List of kanji found, ordered by increasing complexity/frequency in text"));
-		panel.append(populate_table(default_vals));
-
-		var modalBtn = new EButton().button(Primary, Small).addText("Extract");
-		modalBtn.addEventListener("click", onClick);
+		panel.body.append(new EParagraph().addText("List of kanji ordered by frequency in the given text"));
+		panel.append(populate_table(ext.freq_and_meanings(exampleText)));
 
 		var disclaimer = new EParagraph().setAttr("style", "color:#D0D0D0").addText(haxe.Resource.getString("cc_disclaimer"));
+		cont.append(col1).append(panel).append(disclaimer);
 
-		cont.append(col1).append(modalBtn).append(panel).append(disclaimer);
-
-
-		var body = new EBody();
-		body.append(cont);
-
+		var body = new EBody().append(cont);
 		html.append(body);
 		trace("HTML completed");
 	}
-	@:client
-	static public function onClick (_):Void {
+	static public function updateTable(_:Dynamic):Void {
 		var parent = table.parent();
 		table.remove(); // Fix: populate table recreates it again
-		//TODO: Fix this untyped mess
-		var inptxt:Dynamic = js.Browser.document.getElementById("user_input");
-		var input_text:String = inptxt.value;
-		trace("I got that text: " + input_text); //私は学生の日本語です！
+		var input_text:String = inptxt.node.value;
+		trace("processing: " + input_text);
 		parent.append(populate_table(ext.freq_and_meanings(input_text)));
 
 	}
 	@:client
 	static function populate_table(frequencies:Array<Extractor.KanjiFreq>):Table {
-		var rows:Array<Array<Text>> = [[new Text("Freq#"), new Text("Kanji"), new Text("Meaning")]];
+		var rows:Array<Array<Text>> = [[new Text("#"), new Text("Kanji"), new Text("Meaning")]];
 		for (kf in frequencies) rows.push([new Text(Std.string(kf.freq)), new Text(kf.kanji), new Text(kf.meaning)]);
-
 		table = Table.build(rows, [Hover, Striped]);
 		return table;
 	}
