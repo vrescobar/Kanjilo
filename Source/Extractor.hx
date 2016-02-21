@@ -22,6 +22,10 @@ class Extractor {
         meanings = unserializer.unserialize();
         trace("Dictionary initialized");
     }
+	inline function getMeaning(element:String):Array<String> {
+		// TODO test: kanjis w/o meaning (utf8/kanji): (35821, 语) (31925,粵)
+		return if (meanings.exists(element)) meanings.get(element) else [];
+	}
     public function freq_and_meanings(text:String):Array<KanjiFreq> {
         var all_kanji = new Map<Int,Int>();
 
@@ -39,9 +43,8 @@ class Extractor {
                                 {
                                     freq:    all_kanji[kanji],
                                     kanji:   utfInt2string(kanji),
-                                    meaning: meanings.get(utfInt2string(kanji)).join(", ")
-                                }
-                            ];
+                                    meaning: getMeaning(utfInt2string(kanji)).join(", ")
+                                }];
         arr.sort( function(old:KanjiFreq, nnew:KanjiFreq):Int {
                 return nnew.freq - old.freq;
             });
