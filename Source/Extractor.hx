@@ -38,13 +38,13 @@ class Extractor {
                 else all_kanji.set(letter, 1);
             }});
 
-
         var arr = [for (kanji in all_kanji.keys())
                                 {
                                     freq:    all_kanji[kanji],
                                     kanji:   utfInt2string(kanji),
                                     meaning: getMeaning(utfInt2string(kanji)).join(", ")
-                                }];
+                                }
+                            ];
         arr.sort( function(old:KanjiFreq, nnew:KanjiFreq):Int {
                 return nnew.freq - old.freq;
             });
