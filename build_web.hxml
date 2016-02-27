@@ -3,8 +3,8 @@
 -lib hxdom-bootstrap
 -js out/web/client.js
 -main MainJS
--debug
-#--no-traces
+#-debug
+--no-traces
 -resource out/kanji_dumped.serialized@serialized_kanji_dict
 -resource Assets/disclaimer.txt@cc_disclaimer
 -dce full
