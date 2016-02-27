@@ -2,9 +2,7 @@
 
 I was a fan of Heisig's RTK method to learn Japanese Kanji but I did not want to learn the whole list of kanji before start with the learning of the japanese language. Here I bring you the tool which I created for myself in order to study lazily japanese kanji.
 
-Check:
- - The [webpage](http://vrescobar.github.io/Kanjilo/) of the project (ready to downlaod/use)
- - The [github](https://github.com/vrescobar/Kanjilo) of the project (sources)
+Check the [github](https://github.com/vrescobar/Kanjilo) of the project (sources)
 
 ## Download an usage
   - See it as a [single HTML](http://vrescobar.github.io/Kanjilo/out/web/index.html) **webpage** (no active internet connection is required)
